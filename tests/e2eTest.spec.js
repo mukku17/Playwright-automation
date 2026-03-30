@@ -24,7 +24,7 @@ test('login and place order', async ({ page }) => {
     const allProducts = await page.locator('.card-body b').allTextContents();
     console.log("All Products:", allProducts);
 
-    // ✅ Product dhundho aur cart me add karo
+    // ✅ Search Product and add to cart
     const product = page.locator(".card-body");
     const count = await product.count();
 
@@ -35,31 +35,30 @@ test('login and place order', async ({ page }) => {
         }
     }
 
-    // ✅ Cart me jao aur product verify karo
+    // ✅ Very the product
     await page.locator("[routerlink='/dashboard/cart']").click();
     await expect(page.getByText(productname)).toBeVisible();
 
     // ✅ Checkout
     await page.getByRole('button', { name: "Checkout" }).click();
 
-    // ✅ Payment details bharo
+    // ✅ Payment details 
     await page.locator('input.txt.text-validated').first().fill(cardNumber);
     await page.locator('.input.ddl').first().selectOption(expiryMonth);
     await page.locator('.input.ddl').nth(1).selectOption(expiryYear);
     await page.locator('.input.txt').nth(1).fill(cvv);
     await page.locator('.input.txt').nth(2).fill(cardName);
 
-    // ✅ pressSequentially(): Ek ek character type karta hai, autocomplete trigger karne ke liye
     await page.locator('.input.txt.text-validated').nth(2).pressSequentially('IND');
     await page.getByText('India', { exact: true }).click();
 
-    // ✅ Email verify karo
+    // ✅ Email verify
     await expect(page.locator('.user__name [type="text"]').first()).toHaveText(mail);
 
-    // ✅ Order place karo
+    // ✅ Order place 
     await page.getByText('Place Order').click();
 
-    // ✅ Success message verify karo
+    // ✅ Success message verify
     await expect(page.getByText('Thankyou for the order.')).toBeVisible();
 
     // ✅ Order ID print karo - trim() se extra spaces hataye
